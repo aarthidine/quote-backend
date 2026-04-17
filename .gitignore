@@ -1,0 +1,7 @@
+serviceAccountKey.json
+firebase-key.json
+.env
+*.exe
+*.log
+vendor/
+node_modules/
