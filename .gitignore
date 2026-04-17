@@ -1,7 +1,15 @@
+# Firebase / secrets
 serviceAccountKey.json
 firebase-key.json
 .env
+
+# Build files
 *.exe
 *.log
+
+# Dependencies
 vendor/
 node_modules/
+
+# OS files
+.DS_Store
