@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 🔥 Replace with your Firebase URL
+// 🔥 YOUR FIREBASE URL
 const firebaseURL = "https://quotes-app-5a889-default-rtdb.asia-southeast1.firebasedatabase.app"
 
 // 📌 Quote model
@@ -24,7 +24,7 @@ type Quote struct {
 func main() {
 	r := gin.Default()
 
-	// ✅ CORS (important for deployed frontend)
+	// ✅ CORS (for Vercel + mobile)
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:3000",
@@ -39,7 +39,7 @@ func main() {
 	r.POST("/quotes", addQuote)
 	r.DELETE("/quotes/:id", deleteQuote)
 
-	// ✅ Render PORT fix
+	// 🔥 Render PORT fix
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -47,9 +47,11 @@ func main() {
 	r.Run(":" + port)
 }
 
+//
 // ==============================
-// 📌 GET QUOTES
+// 📌 GET QUOTES (FIXED WITH ID)
 // ==============================
+//
 func getQuotes(c *gin.Context) {
 	resp, err := http.Get(firebaseURL + "/quotes.json")
 	if err != nil {
@@ -64,6 +66,8 @@ func getQuotes(c *gin.Context) {
 	json.Unmarshal(body, &data)
 
 	var quotes []Quote
+
+	// 🔥 IMPORTANT: Add ID from Firebase key
 	for key, q := range data {
 		q.ID = key
 		quotes = append(quotes, q)
@@ -72,9 +76,11 @@ func getQuotes(c *gin.Context) {
 	c.JSON(200, quotes)
 }
 
+//
 // ==============================
 // 📌 ADD QUOTE
 // ==============================
+//
 func addQuote(c *gin.Context) {
 	var quote Quote
 
@@ -85,19 +91,20 @@ func addQuote(c *gin.Context) {
 
 	jsonData, _ := json.Marshal(quote)
 
-	resp, err := http.Post(firebaseURL+"/quotes.json", "application/json", bytes.NewBuffer(jsonData))
+	_, err := http.Post(firebaseURL+"/quotes.json", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		c.JSON(500, gin.H{"error": "Failed to add"})
 		return
 	}
-	defer resp.Body.Close()
 
 	c.JSON(200, gin.H{"message": "Quote added"})
 }
 
+//
 // ==============================
 // 📌 DELETE QUOTE
 // ==============================
+//
 func deleteQuote(c *gin.Context) {
 	id := c.Param("id")
 
@@ -111,4 +118,4 @@ func deleteQuote(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "Deleted"})
-}
+}s
