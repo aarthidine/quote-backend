@@ -118,4 +118,4 @@ func deleteQuote(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"message": "Deleted"})
-}s
+}
